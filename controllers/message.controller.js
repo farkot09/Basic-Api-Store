@@ -1,18 +1,23 @@
-const store = require('../store/store');
+const store = require('../store/message.store');
+const socket = require("../socket").socket
 
-const addMessage = (user, message) => {
+const addMessage = (chat, user, message) => {
   return new Promise((resolve, reject) => {
     if (!user || !message) {
       //console.log('[Error de Message controller, No hay usuario o mensaje]');
       return reject('Los datos son incorrectos');
     }
     const fullMessage = {
+      chat,
       user,
       message,
       date: new Date(),
     };
 
     store.add(fullMessage);
+
+    socket.io.emit("message", fullMessage)
+
     resolve(fullMessage);
   });
 };
